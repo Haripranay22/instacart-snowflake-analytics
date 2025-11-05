@@ -54,5 +54,76 @@ You’ll see how raw CSV files are ingested from **Amazon S3**, modeled in **Sno
 ---
 
 ## 🏗️ Project Architecture  
+Amazon S3 → Snowflake Stage → Raw Tables → Star Schema → Analytics
 
 
+1. **Data Source**: CSV files stored in S3.  
+2. **Staging Layer**: External stage in Snowflake to connect with S3.  
+3. **Storage Layer**: Raw tables created via `COPY INTO`.  
+4. **Model Layer**: Fact & dimension tables for analytics.  
+5. **Analytics Layer**: SQL queries for KPIs and business insights.
+
+## 🧱 Project Stages  
+
+### 🔹 Stage 1: Data Staging  
+
+Create an **external stage** in Snowflake to connect to S3.  
+
+```sql
+CREATE OR REPLACE STAGE instacart_stage
+  URL = 's3://dw-with-snowflake-hp/instacart/'
+  STORAGE_INTEGRATION = s3_instacart_int;
+
+CREATE OR REPLACE FILE FORMAT csv_file_format
+  TYPE = 'CSV'
+  FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+  SKIP_HEADER = 1
+  NULL_IF = ('NULL', 'null');
+
+### 🔹 Stage 2: Data Loading
+CREATE OR REPLACE TABLE products (
+  product_id INTEGER,
+  product_name VARCHAR,
+  aisle_id INTEGER,
+  department_id INTEGER
+);
+
+COPY INTO products (product_id, product_name, aisle_id, department_id)
+FROM @instacart_stage/products.csv
+FILE_FORMAT = (FORMAT_NAME = 'csv_file_format');
+
+### 🔹 Stage 3: Data Modeling (Star Schema)
+
+Transform raw data into a star schema for analytics.
+
+Dimension Tables
+
+dim_users
+
+dim_products
+
+dim_aisles
+
+dim_departments
+
+dim_orders
+
+Fact Table
+
+fact_order_products
+
+### 🔹 Stage 4: Analytics & Insights
+
+Perform moderate-level business analytics using SQL.
+
+#	Analytical Question	Business Purpose
+1	Which products have the highest reorder rate?	Product loyalty
+2	Which departments have the most total orders?	Department performance
+3	Which aisles have the most unique products?	Product variety
+4	What are the busiest days of the week for orders?	Customer demand pattern
+5	What are the peak order hours?	Time-based behavior
+6	Which products appear most frequently in baskets?	Popular products
+7	What is the average basket size?	Order behavior
+8	Which users place the most orders?	Top customers
+9	Which departments have the highest reorder rate?	Customer retention by department
+10	Which product-department pairs dominate sales?	Category performance
