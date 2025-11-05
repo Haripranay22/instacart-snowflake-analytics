@@ -1,1 +1,1 @@
-# instacart-snowflake-analytics
+🧊 Instacart Snowflake Analytics Project
