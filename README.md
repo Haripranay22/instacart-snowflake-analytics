@@ -79,7 +79,7 @@ CREATE OR REPLACE FILE FORMAT csv_file_format
   FIELD_OPTIONALLY_ENCLOSED_BY = '"'
   SKIP_HEADER = 1
   NULL_IF = ('NULL', 'null');
-
+----
 ### 🔹 Stage 2: Data Loading
 CREATE OR REPLACE TABLE products (
   product_id INTEGER,
@@ -91,7 +91,7 @@ CREATE OR REPLACE TABLE products (
 COPY INTO products (product_id, product_name, aisle_id, department_id)
 FROM @instacart_stage/products.csv
 FILE_FORMAT = (FORMAT_NAME = 'csv_file_format');
-
+----
 ### 🔹 Stage 3: Data Modeling (Star Schema)
 
 Transform raw data into a star schema for analytics.
@@ -111,7 +111,7 @@ dim_orders
 Fact Table
 
 fact_order_products
-
+----
 ### 🔹 Stage 4: Analytics & Insights
 
 Perform moderate-level business analytics using SQL.
