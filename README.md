@@ -69,7 +69,7 @@ Amazon S3 → Snowflake Stage → Raw Tables → Star Schema → Analytics
 
 Create an **external stage** in Snowflake to connect to S3.  
 
-```sql
+
 CREATE OR REPLACE STAGE instacart_stage
   URL = 's3://dw-with-snowflake-hp/instacart/'
   STORAGE_INTEGRATION = s3_instacart_int;
@@ -91,6 +91,7 @@ CREATE OR REPLACE TABLE products (
 COPY INTO products (product_id, product_name, aisle_id, department_id)
 FROM @instacart_stage/products.csv
 FILE_FORMAT = (FORMAT_NAME = 'csv_file_format');
+
 ----
 ### 🔹 Stage 3: Data Modeling (Star Schema)
 
